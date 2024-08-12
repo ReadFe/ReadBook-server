@@ -54,7 +54,8 @@ const update = async (req, res, next) => {
 
 const index = async (req, res, next) => {
     try {
-        let address = await DeliveryAddress.find();
+        let user = req.user._id;
+        let address = await DeliveryAddress.find({user});
         return res.json(address);
     } catch (err) {
         if (err && err.name === 'ValidationError') {

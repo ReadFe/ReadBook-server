@@ -6,8 +6,8 @@ const Invoice = require('../invoice/model')
 const orderSchema = Schema({
     status: {
         type: String,
-        enum: ['waiting_payment', 'processing', 'in_delivery', 'delivered'],
-        default: 'waiting_payment'
+        enum: ['Menunggu Pembayaran', 'Sedang Memproses', 'Dalam Pengiriman', 'Telah Terkirim'],
+        default: 'Menunggu Pembayaran'
     },
 
     delivery_fee: {
@@ -28,10 +28,7 @@ const orderSchema = Schema({
         ref: 'User'
     },
 
-    order_items: {
-        type: Schema.Types.ObjectId,
-        ref: 'OrderItem'
-    }
+    order_items: []
 }, {timestamps: true});
 
 orderSchema.plugin(AutoIncrement, {inc_field: 'order_number'});

@@ -4,7 +4,7 @@ const invoiceController = require('./controller');
 
 
 router.get(
-    '/invoices/:order_id',
+    '/:order_id',
     police_check('read', 'Invoice'),
     invoiceController.show
 )

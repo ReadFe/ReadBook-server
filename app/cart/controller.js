@@ -3,18 +3,19 @@ const CartItem = require('../cart-item/model');
 
 const update = async(req, res, next) => {
     try {
-        const {items} = req.body;
+        const items = req.body;
+        console.log(items)
         const productIds = items.map(item => item.product._id);
-        const products = await Product.find({id: {$in: productIds}});
+        const products = await Product.find({_id: {$in: productIds}});
         let cartItems = items.map(item => {
-            let relatedProduct = products.find(product => product._id.toString() === item.product._id);
+            let relatedProduct = products.find(product => product._id.toString() === item.product._id.toString());
             return {
-                product: relatedProduct._id,
+                product: relatedProduct,
                 price: relatedProduct.price,
-                image_url: relatedProduct.image_url,
+                image_url: `${req.protocol}://${req.get('host')}/images/products/${relatedProduct.image_url}`,
                 name: relatedProduct.name,
                 user: req.user._id,
-                item: item.qty
+                qty: item.qty
             }
         });
 
@@ -31,7 +32,6 @@ const update = async(req, res, next) => {
                 }
             }
         }));
-
         return res.json(cartItems);
 
     } catch (err) {
@@ -51,7 +51,7 @@ const index = async (req, res, next) => {
     try {
         let items = 
             await CartItem
-            .find({user: req.user._is})
+            .find({user: req.user._id})
             .populate('product');
 
         return res.json(items);

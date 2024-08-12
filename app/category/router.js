@@ -2,21 +2,21 @@ const router = require('express').Router();
 const {police_check} = require('../../middlewares')
 const categoryController = require('./controller')
 
-router.get('/categories',
+router.get('/',
     categoryController.index
 );
 
-router.post('/categories',
+router.post('/',
     police_check('create', 'Category'),
     categoryController.store
 );
 
-router.put('/categories/:id',
+router.put('/:id',
     police_check('update', 'Category'),
     categoryController.update
 );
 
-router.delete('/categories/:id',
+router.delete('/:id',
     police_check('delete', 'Category'),
     categoryController.destroy
 );

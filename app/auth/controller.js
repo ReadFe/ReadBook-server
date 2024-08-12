@@ -31,7 +31,7 @@ const localStrategy = async (email, password, done) => {
             .select('-__v -createdAt -updatedAt -cart_items -token');
         if(!user) return done();
         if(bcrypt.compareSync(password, user.password)) {
-            ( {password, ...userWithoutPassword} = user.toJSON() );
+            ( {password, ...userWithoutPassword} = user.toJSON());
             return done(null, userWithoutPassword);
         }
     } catch (err) {
@@ -41,16 +41,15 @@ const localStrategy = async (email, password, done) => {
     done();
 }
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     passport.authenticate('local', async function(err, user) {
         if(err) return next(err);
 
-        if(!user) return res.json({error: 1, message: 'Email or Password incorrect'});
+        if(!user) return res.status(400).json({error: 1, message: 'Email or Password incorrect'});
         
         let signed = jwt.sign(user, config.secretkey);
 
         await User.findByIdAndUpdate(user._id, {$push: {token: signed}});
-        
         res.json({
             message: 'Login Successfully',
             user,
@@ -71,10 +70,10 @@ const logout = async (req, res, next) => {
         })
     }
 
-    return res.json({
-        error: 0,
-        message: 'Logout berhasil'
-    })
+    // return res.json({
+    //     error: 0,
+    //     message: 'Logout berhasil'
+    // })
 }
 
 const me = (req, res, next) => {

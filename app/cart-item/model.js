@@ -10,7 +10,8 @@ const cartItemSchema = Schema({
     qty: {
         type: Number,
         required: [true, 'qty harus diisi'],
-        minlength: [1, 'panjang minimal qty adalah 1']
+        minlength: [1, 'panjang minimal qty adalah 1'],
+        default: 1
     },
 
     price: {

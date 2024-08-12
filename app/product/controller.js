@@ -8,9 +8,11 @@ const Tag = require('../tag/model');
 const store = async (req, res, next) => {
     try {
         let payload = req.body;
+        console.log(req.body)
 
         if(payload.category) {
             let category = await Category.findOne({name: {$regex: payload.category, $options: 'i'}});
+            console.log(category)
             if(category) {
                 payload = {...payload, category: category._id};
             } else {
@@ -100,6 +102,7 @@ const update = async (req, res, next) => {
         }
 
         if(req.file) {
+            console.log(req.file)
             let tmp_path = req.file.path;
             let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
             let filename = req.file.filename + '.' + originalExt;
@@ -118,7 +121,7 @@ const update = async (req, res, next) => {
                         fs.unlinkSync(currentImage);
                     }
 
-                    product = await Product.findByIdAndUpdate(id, payload, {
+                    product = await Product.findByIdAndUpdate(id, {...payload, image_url: filename}, {
                         new: true,
                         runValidator: true
                     })
@@ -187,6 +190,7 @@ const index = async (req, res, next) => {
 
     let count = await Product.find().countDocuments();
 
+
     try {
         let product = await Product
         .find(criteria)
@@ -194,6 +198,14 @@ const index = async (req, res, next) => {
         .limit(limit)
         .populate('category')
         .populate('tags')
+
+        product = product.map(product => {
+            return {
+                ...product.toObject(),
+                image_url: `${req.protocol}://${req.get('host')}/images/products/${product.image_url}`
+            };
+        });
+
         return res.json({data: product, count})
     } catch (err) {
         next(err)

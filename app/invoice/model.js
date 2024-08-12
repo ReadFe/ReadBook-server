@@ -26,8 +26,8 @@ const invoiceSchema = Schema({
 
     payment_status: {
         type: String,
-        enum: ['waiting_payment', 'paid'],
-        default: 'waiting_payment'
+        enum: ['Menunggu Pembayaran', 'Telah Dibayar'],
+        default: 'Menunggu Pembayaran'
     },
 
     user: {

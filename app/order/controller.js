@@ -8,6 +8,7 @@ const store = async (req, res, next) => {
     try {
         let {delivery_fee, delivery_address} = req.body;
         let items = await CartItem.find({user: req.user._id}).populate('product');
+
         if(!items) {
             return res.json({
                 error: 1,
@@ -17,7 +18,7 @@ const store = async (req, res, next) => {
         let address = await DeliveryAddress.findById(delivery_address);
         let order = new Order({
             _id: new Types.ObjectId(),
-            status: 'waiting_payment',
+            status: 'Menunggu Pembayaran',
             delivery_fee: delivery_fee,
             delivery_address: {
                 provinsi: address.provinsi,
@@ -35,7 +36,7 @@ const store = async (req, res, next) => {
                 name: item.product.name,
                 qty: parseInt(item.qty),
                 price: parseInt(item.product.price),
-                order: order_id,
+                order: order._id,
                 product: item.product._id
             })));
             orderItems.forEach(item => order.order_items.push(item));
@@ -58,7 +59,7 @@ const store = async (req, res, next) => {
 const index = async (req, res, next) => {
     try {
         let {skip = 0, limit = 10} = req.query;
-        let count = await Order.find({user: req.user._id}).countDocument();
+        let count = await Order.find({user: req.user._id}).countDocuments();
         let orders = 
             await Order
                 .find({user: req.user._id})
