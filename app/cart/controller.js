@@ -4,7 +4,6 @@ const CartItem = require('../cart-item/model');
 const update = async(req, res, next) => {
     try {
         const items = req.body;
-        console.log(items)
         const productIds = items.map(item => item.product._id);
         const products = await Product.find({_id: {$in: productIds}});
         let cartItems = items.map(item => {
@@ -19,7 +18,7 @@ const update = async(req, res, next) => {
             }
         });
 
-        await CartItem.deleteMany({user: req.user._id});
+        // await CartItem.deleteMany({user: req.user._id});
         await CartItem.bulkWrite(cartItems.map(item => {
             return {
                 updateOne: {
@@ -38,7 +37,7 @@ const update = async(req, res, next) => {
             if (err && err.name === 'ValidationError') {
             return res.json({
                 error: 1,
-                message: err.message,
+                message: err.message,   
                 fields: err.errors
             })
         }
@@ -68,7 +67,26 @@ const index = async (req, res, next) => {
     }
 }
 
+const destroy = async (req, res, next) => {
+    try {
+        let {id} = req.params;
+        let items = await CartItem.findByIdAndDelete(id);
+
+        return res.json(items);
+    } catch (err) {
+        if (err && err.name === 'ValidationError') {
+            return res.json({
+                error: 1,
+                message: err.message,
+                fields: err.errors
+            })
+        }
+        next(err)
+    }
+}
+
 module.exports = {
     update,
-    index
+    index,
+    destroy
 }

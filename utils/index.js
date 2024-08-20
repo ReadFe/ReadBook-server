@@ -20,6 +20,7 @@ const policies = {
         can('read', 'Order', {user_id: user._id});
         can('update', 'User', {user_id: user._id});
         can('read', 'Cart', {user_id: user._id});
+        can('delete', 'Cart');
         can('update', 'Cart', {user_id: user._id});
         can('view', 'DeliveryAddress');
         can('update', 'DeliveryAddress', {user_id: user._id});
