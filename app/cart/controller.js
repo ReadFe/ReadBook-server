@@ -18,6 +18,7 @@ const update = async(req, res, next) => {
             }
         });
 
+        // tidak bisa menyimpan data yang dulu karena deleteMany 
         // await CartItem.deleteMany({user: req.user._id});
         await CartItem.bulkWrite(cartItems.map(item => {
             return {
