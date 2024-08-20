@@ -15,6 +15,12 @@ router.get(
     cartController.index
 )
 
+router.delete(
+    '/:id',
+    police_check('read', 'Cart'),
+    cartController.destroy
+)
+
 
 
 module.exports = router; 
