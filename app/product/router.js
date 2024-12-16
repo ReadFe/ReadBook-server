@@ -23,5 +23,8 @@ router.delete('/:id',
     police_check('delete', 'Product'), 
     productController.destroy
 );
+router.get('/:id',
+    productController.view
+);
 
 module.exports = router;

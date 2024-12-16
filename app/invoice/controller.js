@@ -11,7 +11,6 @@ const show = async (req, res, next) => {
         .populate('order')
         .populate('user');
         
-        console.log(invoice)
         let policy = policyFor(req.user);
         let subjectInvoice = subject('Invoice', {...invoice, user_id: invoice.user._id});
         if(!policy.can('read', subjectInvoice)) {

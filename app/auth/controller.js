@@ -29,7 +29,7 @@ const localStrategy = async (email, password, done) => {
         let user = await User
             .findOne({email})
             .select('-__v -createdAt -updatedAt -cart_items -token');
-        if(!user) return done();
+        if(!user) return done(err);
         if(bcrypt.compareSync(password, user.password)) {
             ( {password, ...userWithoutPassword} = user.toJSON());
             return done(null, userWithoutPassword);
@@ -48,7 +48,6 @@ const login = async (req, res, next) => {
         if(!user) return res.status(400).json({error: 1, message: 'Email or Password incorrect'});
         
         let signed = jwt.sign(user, config.secretkey);
-
         await User.findByIdAndUpdate(user._id, {$push: {token: signed}});
         res.json({
             message: 'Login Successfully',
@@ -70,20 +69,20 @@ const logout = async (req, res, next) => {
         })
     }
 
-    // return res.json({
-    //     error: 0,
-    //     message: 'Logout berhasil'
-    // })
+    return res.json({
+        error: 0,
+        message: 'Logout berhasil'
+    })
 }
 
 const me = (req, res, next) => {
     if(!req.user) {
-        res.json({
+        return res.json({
             error: 1,
             message: `You're not login or token expired`
         })
     }
-    res.json(req.user);
+    return res.json(req.user);
 }
 
 module.exports = {

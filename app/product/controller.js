@@ -226,9 +226,23 @@ const destroy = async (req, res, next) => {
     }
 }
 
+const view = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        let product = await Product.findById(id);
+
+        product.image_url = `${req.protocol}://${req.get('host')}/images/products/${product.image_url}`
+
+        return res.json(product);
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     store,
     index,
     update,
-    destroy
+    destroy,
+    view
 }
