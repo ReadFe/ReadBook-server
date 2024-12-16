@@ -3,22 +3,22 @@ const CartItem = require('../cart-item/model');
 
 const update = async(req, res, next) => {
     try {
-        const items = req.body;
+        const {items} = req.body;
         const productIds = items.map(item => item.product._id);
         const products = await Product.find({_id: {$in: productIds}});
         let cartItems = items.map(item => {
-            let relatedProduct = products.find(product => product._id.toString() === item.product._id.toString());
+            let relatedProduct = products.find(product => product._id.toString() === item.product._id);
             return {
-                product: relatedProduct,
+                product: relatedProduct._id,
                 price: relatedProduct.price,
                 image_url: `${req.protocol}://${req.get('host')}/images/products/${relatedProduct.image_url}`,
                 name: relatedProduct.name,
                 user: req.user._id,
-                qty: item.qty
+                qty: item.qty || 1
             }
         });
 
-        // await CartItem.deleteMany({user: req.user._id});
+        await CartItem.deleteMany({user: req.user._id});
         await CartItem.bulkWrite(cartItems.map(item => {
             return {
                 updateOne: {
