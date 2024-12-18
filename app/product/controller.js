@@ -102,7 +102,6 @@ const update = async (req, res, next) => {
         }
 
         if(req.file) {
-            console.log(req.file)
             let tmp_path = req.file.path;
             let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
             let filename = req.file.filename + '.' + originalExt;
@@ -205,6 +204,7 @@ const index = async (req, res, next) => {
                 image_url: `${req.protocol}://${req.get('host')}/images/products/${product.image_url}`
             };
         });
+        console.log(product)
 
         return res.json({data: product, count})
     } catch (err) {

@@ -11,12 +11,12 @@ router.get('/',
 
 router.post('/', 
     multer({dest: os.tmpdir()}).single('image_url'),
-    // police_check('create', 'Product'),
+    police_check('create', 'Product'),
     productController.store
 );
 router.put('/:id', 
     multer({dest: os.tmpdir()}).single('image_url'), 
-    // police_check('update', 'Product'),
+    police_check('update', 'Product'),
     productController.update
 );
 router.delete('/:id',
