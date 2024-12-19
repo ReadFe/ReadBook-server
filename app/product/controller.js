@@ -8,11 +8,9 @@ const Tag = require('../tag/model');
 const store = async (req, res, next) => {
     try {
         let payload = req.body;
-        console.log(req.body)
 
         if(payload.category) {
             let category = await Category.findOne({name: {$regex: payload.category, $options: 'i'}});
-            console.log(category)
             if(category) {
                 payload = {...payload, category: category._id};
             } else {
@@ -204,7 +202,6 @@ const index = async (req, res, next) => {
                 image_url: `${req.protocol}://${req.get('host')}/images/products/${product.image_url}`
             };
         });
-        console.log(product)
 
         return res.json({data: product, count})
     } catch (err) {
